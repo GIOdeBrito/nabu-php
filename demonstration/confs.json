@@ -1,0 +1,6 @@
+{
+	"title": "NabuPHP Configuration File",
+	"appversion": "1.0.0",
+	"routespath": "/var/www/html/public/Routes",
+	"author": "Giordano de Brito"
+}

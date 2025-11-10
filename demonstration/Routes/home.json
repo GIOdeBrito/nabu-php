@@ -1,0 +1,5 @@
+{
+	"method": "GET",
+	"path": "/public/",
+	"controller": "HomeController@index"
+}
