@@ -2,15 +2,19 @@
 
 namespace NabuPHP\Helpers;
 
+use NabuPHP\Helpers\StringHelpers;
+
 class RouteHelpers
 {
-	public static function getRouteSettings ($route)
+	public static function getRouteSettings ($route, $constants)
 	{
 		$keys = get_object_vars($route);
 
 		$settings = [
 			'content' => '',
 			'content-type' => 'text/html',
+
+			'view-vars' => [],
 
 			'isController' => false,
 			'controller' => '',
@@ -21,7 +25,13 @@ class RouteHelpers
 
 			//echo $key.PHP_EOL;
 
-			switch ($key)
+			// Apply constant replacement if the value is a string
+			if(gettype($value) === 'string' && !is_null($constants))
+			{
+				$value = StringHelpers::constantFinderReplacer($value, $constants);
+			}
+
+			switch($key)
 			{
 				case 'html':
 				case 'content':
@@ -49,6 +59,10 @@ class RouteHelpers
 
 				case 'content-type':
 					$settings['content-type'] = $value;
+					break;
+
+				case "var":
+					$settings['view-vars'] = (array) $value;
 					break;
 
 				default:

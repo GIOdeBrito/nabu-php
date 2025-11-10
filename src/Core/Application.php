@@ -3,6 +3,7 @@
 namespace NabuPHP\Core;
 
 use NabuPHP\Routing\Router;
+use NabuPHP\Helpers\StringHelpers;
 
 define('__ABSOLUTEPATH__', __DIR__);
 
@@ -30,7 +31,7 @@ final class Application
 
 	public function run ()
 	{
-		$router = new Router($this->routeFiles);
+		$router = new Router($this->routeFiles, $this->configs);
 		$router->call();
 	}
 
@@ -42,12 +43,18 @@ final class Application
 
 	private function excavateJSONRouteFiles ()
 	{
-		if(!isset($this->configs->routespath))
+		if(!isset($this->configs->properties->{'routes-folder'}))
 		{
 			throw new \Exception("Routes property were not set");
 		}
 
-		$path = $this->configs->routespath;
+		$path = $this->configs->properties->{'routes-folder'};
+
+		// Replaces constants in property strings
+		if(isset($this->configs->constants))
+		{
+			$path = StringHelpers::constantFinderReplacer($path, $this->configs->constants);
+		}
 
 		// Get all JSON route files
 		$jsonFiles = glob($path.'/*.json');

@@ -1,0 +1,8 @@
+{
+	"method": "GET",
+	"path": "/public/about",
+	"var": {
+		"title": "View Name"
+	},
+	"view": "$VIEWS_PATH/about.php"
+}

@@ -1,6 +1,15 @@
 {
 	"title": "NabuPHP Configuration File",
-	"appversion": "1.0.0",
-	"routespath": "/var/www/html/public/Routes",
+	"description": "This is a NabuPHP application general configuration file.",
+	"version": "1.0.0",
+	"properties": {
+		"routes-folder": "$HOME/Routes",
+		"layouts-folder": "$ABSPATH/src/Template"
+	},
+	"constants": {
+		"ABSPATH": "/var/www/html",
+		"HOME": "/var/www/html/public",
+		"VIEWS_PATH": "/var/www/html/public/Views"
+	},
 	"author": "Giordano de Brito"
 }
