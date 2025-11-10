@@ -3,6 +3,8 @@
 namespace NabuPHP\Routing;
 
 use NabuPHP\Http\Request;
+use NabuPHP\Helpers\ControllerHelpers;
+use NabuPHP\Helpers\RouteHelpers;
 
 class Router
 {
@@ -29,25 +31,29 @@ class Router
 			throw new \Exception("No proper route was found");
 		}
 
-		$definitions = $this->getRouteDefinitions($route);
-		$content = $definitions['content'];
-		$code = 200;
-
-		// TODO: Create a function for this logic later (separation of concerns)
+		$settings = RouteHelpers::getRouteSettings($route);
 
 		// Controller instructions
-		if($definitions['isController'] === true)
+		if($settings['isController'] === true)
 		{
-			$callMethod = $content[1];
-			$controller = $this->controllerInstantiator($content[0]);
-
-			$controlerMethodResponse = $controller->{$callMethod}();
-
-			$code = $controlerMethodResponse['status'];
-			$content = $controlerMethodResponse['content'];
+			$this->controllerResponse($settings['controller'], $settings['controllerCallMethod']);
+			return;
 		}
 
+		$this->sendResponse(200, $settings['content'], $settings['content-type']);
+	}
+
+	private function sendResponse ($code, $content, $contentType)
+	{
+		header("Content-Type: ".$contentType);
 		http_response_code($code);
+
+		// Encodes to JSON if not a string
+		if($contentType === 'application/json' && gettype($content) !== 'string')
+		{
+			$content = json_encode($content);
+		}
+
 		echo $content;
 	}
 
@@ -72,56 +78,23 @@ class Router
 		return NULL;
 	}
 
-	private function getRouteDefinitions ($route)
+	private function controllerResponse ($controllerName, $callMethod)
 	{
-		$keys = get_object_vars($route);
+		$code = 200;
+		$controller = ControllerHelpers::controllerInstantiator($controllerName);
 
-		$definitionsObj = [
-			'content' => NULL,
-			'isController' => false,
-		];
+		$controlerMethodResponse = $controller->{$callMethod}();
 
-		foreach($keys as $key => $value):
+		// If the key 'status' was set
+		if(isset($controlerMethodResponse['status']))
+		{
+			$code = intval($controlerMethodResponse['status']);
+		}
 
-			//echo $key.PHP_EOL;
+		$content = $controlerMethodResponse['data'];
+		$contentType = $controlerMethodResponse['content-type'];
 
-			switch ($key)
-			{
-				case 'html':
-				case 'content':
-				case 'html-content':
-				case 'html_content':
-					$definitionsObj['isController'] = false;
-					$definitionsObj['content'] = $value;
-					break;
-
-				case 'render':
-				case 'view':
-					$definitionsObj['isController'] = false;
-					$definitionsObj['content'] = file_get_contents($value);
-					break;
-
-				case 'controller':
-					$splitedString = explode('@', $value);
-					$controller = $splitedString[0];
-					$method = $splitedString[1];
-
-					$definitionsObj['isController'] = true;
-					$definitionsObj['content'] = [ $controller, $method ];
-					break;
-
-				default:
-					break;
-			}
-
-		endforeach;
-
-		return $definitionsObj;
-	}
-
-	private function controllerInstantiator ($controller)
-	{
-		return new $controller();
+		$this->sendResponse($code, $content, $contentType);
 	}
 }
 

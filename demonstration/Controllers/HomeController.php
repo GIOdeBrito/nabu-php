@@ -1,6 +1,8 @@
 <?php
 
-class HomeController
+use NabuPHP\MVC\Controller;
+
+class HomeController extends Controller
 {
 	public function __construct ()
 	{
@@ -9,12 +11,12 @@ class HomeController
 
 	public function index ()
 	{
-		return [ 'status' => 200, 'content' => "<h1>Receba</h1>" ];
+		return $this->html(200, "<h1>Receba</h1>");
 	}
 
 	public function health ()
 	{
-		return [ 'status' => 200, 'content' => "<p>Healthy</p>" ];
+		return $this->json(200, [ 'message' => "Healthy" ]);
 	}
 }
 

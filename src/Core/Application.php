@@ -32,19 +32,6 @@ final class Application
 	{
 		$router = new Router($this->routeFiles);
 		$router->call();
-
-		/*try
-		{
-
-		}
-		catch(\Exception $ex)
-		{
-			error_log("Nabu warns: ".$ex->getMessage());
-		}
-		finally
-		{
-			die();
-		}*/
 	}
 
 	private function dumpConfigs ()

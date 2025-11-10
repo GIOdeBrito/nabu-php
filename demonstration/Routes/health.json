@@ -1,5 +1,8 @@
 {
 	"method": "GET",
 	"path": "/public/health",
-	"controller": "HomeController@health"
+	"content": {
+		"message": "Healthy"
+	},
+	"content-type": "application/json"
 }
