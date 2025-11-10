@@ -5,6 +5,7 @@ namespace NabuPHP\Routing;
 use NabuPHP\Http\Request;
 use NabuPHP\Helpers\ControllerHelpers;
 use NabuPHP\Helpers\RouteHelpers;
+use NabuPHP\Helpers\StringHelpers;
 
 class Router
 {
@@ -47,6 +48,12 @@ class Router
 		if($settings['isController'] === true)
 		{
 			$this->controllerResponse($settings['controller'], $settings['controllerCallMethod']);
+			return;
+		}
+
+		if($settings['isView'] === true)
+		{
+			$this->viewResponse($settings['view-path'], $settings['view-vars']);
 			return;
 		}
 
@@ -105,6 +112,27 @@ class Router
 		$contentType = $controlerMethodResponse['content-type'];
 
 		$this->sendResponse($code, $content, $contentType);
+	}
+
+	private function viewResponse ($path, $vars = [])
+	{
+		extract($vars);
+
+		ob_start();
+		include $path;
+		$body = ob_get_clean();
+
+		// Renders with layout
+		if(isset($this->configs->properties->{'layouts-folder'}))
+		{
+			$layout_folder = StringHelpers::constantFinderReplacer($this->configs->properties->{'layouts-folder'}, $this->constants);
+
+			ob_start();
+			include $layout_folder.'/_layout.php';
+			$body = ob_get_clean();
+		}
+
+		$this->sendResponse(200, $body, 'text/html');
 	}
 }
 

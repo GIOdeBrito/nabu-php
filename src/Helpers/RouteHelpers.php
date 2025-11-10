@@ -14,11 +14,13 @@ class RouteHelpers
 			'content' => '',
 			'content-type' => 'text/html',
 
+			'view-path' => '',
 			'view-vars' => [],
+			'isView' => false,
 
-			'isController' => false,
 			'controller' => '',
-			'controllerCallMethod' => ''
+			'controllerCallMethod' => '',
+			'isController' => false
 		];
 
 		foreach($keys as $key => $value):
@@ -44,7 +46,8 @@ class RouteHelpers
 				case 'render':
 				case 'view':
 					$settings['isController'] = false;
-					$settings['content'] = file_get_contents($value);
+					$settings['isView'] = true;
+					$settings['view-path'] = $value;
 					break;
 
 				case 'controller':
@@ -61,7 +64,7 @@ class RouteHelpers
 					$settings['content-type'] = $value;
 					break;
 
-				case "var":
+				case "vars":
 					$settings['view-vars'] = (array) $value;
 					break;
 
