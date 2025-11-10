@@ -12,6 +12,7 @@ class Router
 	private $parsedRoutes = [];
 
 	private $configs;
+	private $constants = NULL;
 
 	public function __construct ($routeFiles, $configs)
 	{
@@ -23,6 +24,11 @@ class Router
 		$this->routeFiles = $routeFiles;
 
 		$this->configs = $configs;
+
+		if(isset($this->configs->constants))
+		{
+			$this->constants = $this->configs->constants;
+		}
 	}
 
 	public function call ()
@@ -35,7 +41,7 @@ class Router
 			throw new \Exception("No proper route was found");
 		}
 
-		$settings = RouteHelpers::getRouteSettings($route, $this->configs->constants);
+		$settings = RouteHelpers::getRouteSettings($route, $this->constants);
 
 		// Controller instructions
 		if($settings['isController'] === true)
