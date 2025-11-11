@@ -2,8 +2,10 @@
 
 namespace NabuPHP\Core;
 
+use NabuPHP\Core\Configuration;
 use NabuPHP\Routing\Router;
 use NabuPHP\Helpers\StringHelpers;
+use NabuPHP\Helpers\RouteHelpers;
 
 define('__ABSOLUTEPATH__', __DIR__);
 
@@ -14,19 +16,13 @@ final class Application
 
 	public function __construct ($configPath)
 	{
-		$configPathAbs = $configPath;
+		$this->configs = new Configuration($configPath);
 
-		if(!file_exists($configPathAbs))
-		{
-			$errMsg = "Config file: {$configPathAbs}, not found";
-			error_log($errMsg);
-			throw new \Exception($errMsg);
-		}
-
-		$this->configs = json_decode(file_get_contents($configPathAbs));
+		$routesPath = $this->configs->getProperty('routes-folder');
+		$constants = $this->configs->getConstants();
 
 		// Get all the JSON route files
-		$this->excavateJSONRouteFiles();
+		$this->routeFiles = RouteHelpers::excavateJSONRouteFiles($routesPath, $constants);
 	}
 
 	public function run ()
@@ -53,7 +49,7 @@ final class Application
 		// Replaces constants in property strings
 		if(isset($this->configs->constants))
 		{
-			$path = StringHelpers::constantFinderReplacer($path, $this->configs->constants);
+			$path = StringHelpers::constantFinderReplacer($path, $this->configs->getConstants());
 		}
 
 		// Get all JSON route files

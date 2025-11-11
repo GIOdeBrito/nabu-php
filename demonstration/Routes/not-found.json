@@ -1,0 +1,6 @@
+{
+	"method": "GET",
+	"path": "/public/not-found",
+	"content": "<p>The request route was not found</p>",
+	"content-type": "text/html"
+}

@@ -4,7 +4,9 @@
 	"version": "1.0.0",
 	"properties": {
 		"routes-folder": "$HOME/Routes",
-		"layouts-folder": "$ABSPATH/src/Template"
+		"layouts-folder": "$ABSPATH/src/Template",
+		"notfound-redirect": "/public/not-found",
+		"onerror-redirect": "/public/error"
 	},
 	"constants": {
 		"ABSPATH": "/var/www/html",

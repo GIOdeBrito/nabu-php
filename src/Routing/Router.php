@@ -13,7 +13,6 @@ class Router
 	private $parsedRoutes = [];
 
 	private $configs;
-	private $constants = NULL;
 
 	public function __construct ($routeFiles, $configs)
 	{
@@ -23,13 +22,7 @@ class Router
 		}
 
 		$this->routeFiles = $routeFiles;
-
 		$this->configs = $configs;
-
-		if(isset($this->configs->constants))
-		{
-			$this->constants = $this->configs->constants;
-		}
 	}
 
 	public function call ()
@@ -39,10 +32,19 @@ class Router
 
 		if(is_null($route))
 		{
+			$notfoundPath = $this->configs->getProperty('notfound-redirect');
+			$notfoundRoute = $this->routeLookup('GET', $notfoundPath);
+
+			if(!is_null($notfoundRoute))
+			{
+				header('Location: '.$notfoundPath);
+				return;
+			}
+
 			throw new \Exception("No proper route was found");
 		}
 
-		$settings = RouteHelpers::getRouteSettings($route, $this->constants);
+		$settings = RouteHelpers::getRouteSettings($route, $this->configs->getConstants());
 
 		// Controller instructions
 		if($settings['isController'] === true)
@@ -76,6 +78,11 @@ class Router
 
 	private function routeLookup ($method, $path)
 	{
+		if(is_null($path))
+		{
+			return NULL;
+		}
+
 		foreach($this->routeFiles as $file):
 
 			$obj = json_decode(file_get_contents($file));
@@ -85,7 +92,7 @@ class Router
 				continue;
 			}
 
-			if($obj->method === $method && $obj->path === $path)
+			if(mb_strtoupper($obj->method) === mb_strtoupper($method) && $obj->path === $path)
 			{
 				return $obj;
 			}
@@ -125,7 +132,8 @@ class Router
 		// Renders with layout
 		if(isset($this->configs->properties->{'layouts-folder'}))
 		{
-			$layout_folder = StringHelpers::constantFinderReplacer($this->configs->properties->{'layouts-folder'}, $this->constants);
+			$layoutsFolder = $this->configs->getProperty('layouts-folder');
+			$layout_folder = StringHelpers::constantFinderReplacer($layoutsFolder, $this->configs->getConstants());
 
 			ob_start();
 			include $layout_folder.'/_layout.php';

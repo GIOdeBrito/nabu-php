@@ -76,6 +76,22 @@ class RouteHelpers
 
 		return $settings;
 	}
+
+	public static function excavateJSONRouteFiles ($routesPath, $constants)
+	{
+		$path = $routesPath;
+
+		// Replaces constants in property strings
+		if($constants)
+		{
+			$path = StringHelpers::constantFinderReplacer($path, $constants);
+		}
+
+		// Get all JSON route files
+		$jsonFiles = glob($path.'/*.json');
+
+		return $jsonFiles;
+	}
 }
 
 ?>
