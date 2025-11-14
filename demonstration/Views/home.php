@@ -16,7 +16,7 @@
 
 	<section>
 		<ul>
-			<li><a href="/public/health">health</a></li>
+			<li><a href="/public/api/v1/health">health</a></li>
 			<li><a href="/public/about">about</a></li>
 			<li><a href="/public/not-found">not found</a></li>
 		</ul>

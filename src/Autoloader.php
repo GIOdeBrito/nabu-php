@@ -4,7 +4,7 @@
 	BelPHP autoloader
 ======================================= */
 
-spl_autoload_register(function ($classname)
+spl_autoload_register(function (string $classname): void
 {
 	// Get the root folder of the framework
 	$root = __DIR__.'/';

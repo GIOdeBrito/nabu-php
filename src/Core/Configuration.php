@@ -2,30 +2,30 @@
 
 namespace NabuPHP\Core;
 
-use NabuPHP\Helpers\ObjectHelpers;
+use function NabuPHP\Helpers\Objects\object_get_keys;
 
 class Configuration
 {
-	private $configs;
-	private $properties = NULL;
-	private $constants = NULL;
+	private ?object $configs = NULL;
+	private ?object $properties = NULL;
+	private ?object $constants = NULL;
 
 	public function __construct ($configPath)
 	{
 		$this->getConfigurationData($configPath);
 	}
 
-	public function getConstants ()
+	public function getConstants (): object
 	{
 		return $this->constants;
 	}
 
-	public function getProperties ()
+	public function getProperties (): object
 	{
 		return $this->properties;
 	}
 
-	public function getProperty ($name)
+	public function getProperty (string $name): string
 	{
 		if(!isset($this->properties->{$name}))
 		{
@@ -35,7 +35,7 @@ class Configuration
 		return $this->properties->{$name};
 	}
 
-	private function getConfigurationData ($configPath)
+	private function getConfigurationData (string $configPath): void
 	{
 		if(!file_exists($configPath))
 		{
@@ -46,7 +46,7 @@ class Configuration
 
 		$configs = json_decode(file_get_contents($configPath));
 
-		if(count(ObjectHelpers::getKeys($configs)) === 0)
+		if(count(object_get_keys($configs)) === 0)
 		{
 			throw new \Exception("Configuration object is empty");
 		}

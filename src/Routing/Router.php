@@ -3,9 +3,10 @@
 namespace NabuPHP\Routing;
 
 use NabuPHP\Http\Request;
-use NabuPHP\Helpers\ControllerHelpers;
-use NabuPHP\Helpers\RouteHelpers;
-use NabuPHP\Helpers\StringHelpers;
+
+use function NabuPHP\Helpers\Strings\constant_finder_replacer;
+use function NabuPHP\Helpers\Routes\get_route_settings;
+use function NabuPHP\Helpers\Controllers\controller_instantiator;
 
 class Router
 {
@@ -44,7 +45,7 @@ class Router
 			throw new \Exception("No proper route was found");
 		}
 
-		$settings = RouteHelpers::getRouteSettings($route, $this->configs->getConstants());
+		$settings = get_route_settings($route, $this->configs->getConstants());
 
 		// Controller instructions
 		if($settings['isController'] === true)
@@ -105,7 +106,7 @@ class Router
 	private function controllerResponse ($controllerName, $callMethod)
 	{
 		$code = 200;
-		$controller = ControllerHelpers::controllerInstantiator($controllerName);
+		$controller = controller_instantiator($controllerName);
 
 		$controlerMethodResponse = $controller->{$callMethod}();
 
@@ -134,7 +135,7 @@ class Router
 		if(!is_null($this->configs->getProperty('layouts-folder')))
 		{
 			$layoutsFolder = $this->configs->getProperty('layouts-folder');
-			$layout_folder = StringHelpers::constantFinderReplacer($layoutsFolder, $this->configs->getConstants());
+			$layout_folder = constant_finder_replacer($layoutsFolder, $this->configs->getConstants());
 
 			ob_start();
 			include $layout_folder.'/_layout.php';

@@ -4,5 +4,5 @@
 	"viewdata": {
 		"title": "Home"
 	},
-	"render": "$VIEWS_PATH/home.php"
+	"view": "$VIEWS_PATH/home.php"
 }

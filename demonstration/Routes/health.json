@@ -1,6 +1,6 @@
 {
 	"method": "GET",
-	"path": "/public/health",
+	"path": "/public/api/v1/health",
 	"content": {
 		"message": "Healthy"
 	},

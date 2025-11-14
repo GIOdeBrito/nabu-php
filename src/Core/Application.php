@@ -2,27 +2,41 @@
 
 namespace NabuPHP\Core;
 
+define('__ABSOLUTEPATH__', __DIR__.'/..');
+
+// Import namespace'd helper files
+require __ABSOLUTEPATH__.'/Helpers/Objects.php';
+require __ABSOLUTEPATH__.'/Helpers/Strings.php';
+require __ABSOLUTEPATH__.'/Helpers/Routes.php';
+require __ABSOLUTEPATH__.'/Helpers/Controllers.php';
+
 use NabuPHP\Core\Configuration;
 use NabuPHP\Routing\Router;
-use NabuPHP\Helpers\StringHelpers;
-use NabuPHP\Helpers\RouteHelpers;
 
-define('__ABSOLUTEPATH__', __DIR__);
+use function NabuPHP\Helpers\Strings\constant_finder_replacer;
+use function NabuPHP\Helpers\Routes\excavate_JSON_route_files;
 
 final class Application
 {
-	private $configs;
-	private $routeFiles = [];
+	private ?object $configs = NULL;
+	private array $routeFiles = [];
 
-	public function __construct ($configPath)
+	public function __construct (string $configPath)
 	{
+		if(PHP_OS !== 'Linux')
+		{
+			http_response_code(500);
+			echo "Stop right there. Use a decent OS.";
+			die();
+		}
+
 		$this->configs = new Configuration($configPath);
 
 		$routesPath = $this->configs->getProperty('routes-folder');
 		$constants = $this->configs->getConstants();
 
 		// Get all the JSON route files
-		$this->routeFiles = RouteHelpers::excavateJSONRouteFiles($routesPath, $constants);
+		$this->routeFiles = excavate_JSON_route_files($routesPath, $constants);
 	}
 
 	public function run ()
@@ -35,27 +49,6 @@ final class Application
 	{
 		var_dump($this->configs);
 		die();
-	}
-
-	private function excavateJSONRouteFiles ()
-	{
-		if(!isset($this->configs->properties->{'routes-folder'}))
-		{
-			throw new \Exception("Routes property were not set");
-		}
-
-		$path = $this->configs->properties->{'routes-folder'};
-
-		// Replaces constants in property strings
-		if(isset($this->configs->constants))
-		{
-			$path = StringHelpers::constantFinderReplacer($path, $this->configs->getConstants());
-		}
-
-		// Get all JSON route files
-		$jsonFiles = glob($path.'/*.json');
-
-		$this->routeFiles = $jsonFiles;
 	}
 }
 

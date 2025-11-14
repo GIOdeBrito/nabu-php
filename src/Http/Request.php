@@ -4,18 +4,12 @@ namespace NabuPHP\Http;
 
 class Request
 {
-	public function __construct ()
-	{
-		//var_dump($_SERVER);
-		//die();
-	}
-
-	public function getMethod ()
+	public function getMethod (): string
 	{
 		return $_SERVER['REQUEST_METHOD'];
 	}
 
-	public function getPath ()
+	public function getPath (): string
 	{
 		return $_SERVER['REQUEST_URI'];
 	}

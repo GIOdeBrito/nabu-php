@@ -2,9 +2,9 @@
 <html lang="en" dir="ltr">
 	<head>
 		<meta charset="utf-8">
-		<title><?= $title ?> | Layout</title>
+		<title><?= $title ?? 'Page' ?> | Layout</title>
 	</head>
 	<body>
-		<?= $body ?>
+		<?= $body ?? '' ?>
 	</body>
 </html>
