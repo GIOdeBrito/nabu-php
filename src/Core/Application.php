@@ -10,12 +10,14 @@ require __ABSOLUTEPATH__.'/Helpers/Strings.php';
 require __ABSOLUTEPATH__.'/Helpers/Routes.php';
 require __ABSOLUTEPATH__.'/Helpers/Controllers.php';
 require __ABSOLUTEPATH__.'/Helpers/Rendering.php';
+require __ABSOLUTEPATH__.'/Helpers/Directories.php';
 
 use NabuPHP\Core\Configuration;
 use NabuPHP\Routing\Router;
 
 use function NabuPHP\Helpers\Strings\constant_finder_replacer;
 use function NabuPHP\Helpers\Routes\excavate_JSON_route_files;
+use function NabuPHP\Helpers\Directories\get_directories_recursive;
 
 final class Application
 {
@@ -24,6 +26,9 @@ final class Application
 
 	public function __construct (string $configPath)
 	{
+		//var_dump(get_directories_recursive(__ABSOLUTEPATH__));
+		//die();
+
 		if(PHP_OS !== 'Linux')
 		{
 			http_response_code(500);
