@@ -1,8 +1,8 @@
 {
 	"method": "GET",
 	"path": "/public/api/v1/health",
-	"content": {
+	"json": {
+		"status": 200,
 		"message": "Healthy"
-	},
-	"content-type": "application/json"
+	}
 }

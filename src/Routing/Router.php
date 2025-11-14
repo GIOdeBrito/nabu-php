@@ -5,8 +5,7 @@ namespace NabuPHP\Routing;
 use NabuPHP\Http\Request;
 
 use function NabuPHP\Helpers\Strings\constant_finder_replacer;
-use function NabuPHP\Helpers\Routes\get_route_settings;
-use function NabuPHP\Helpers\Controllers\controller_instantiator;
+use function NabuPHP\Helpers\Routes\{ get_route_settings, get_route_response };
 
 class Router
 {
@@ -46,38 +45,24 @@ class Router
 		}
 
 		$settings = get_route_settings($route, $this->configs->getConstants());
+		$response = get_route_response($settings, $this->configs);
 
-		// Controller instructions
-		if($settings['isController'] === true)
-		{
-			$this->controllerResponse($settings['controller'], $settings['controllerCallMethod']);
-			return;
-		}
+		$data = $response->getData();
+		$contentType = $response->getContentType();
 
-		if($settings['isView'] === true)
-		{
-			$this->viewResponse($settings['view-path'], $settings['view-vars']);
-			return;
-		}
+		$this->sendResponse(200, $data, $contentType);
 
-		$this->sendResponse(200, $settings['content'], $settings['content-type']);
+		die();
 	}
 
-	private function sendResponse ($code, $content, $contentType)
+	private function sendResponse (int $code, string $content, string $contentType): void
 	{
 		header("Content-Type: ".$contentType);
-		http_response_code($code);
-
-		// Encodes to JSON if not a string
-		if($contentType === 'application/json' && gettype($content) !== 'string')
-		{
-			$content = json_encode($content);
-		}
-
+		http_response_code(intval($code));
 		echo $content;
 	}
 
-	private function routeLookup ($method, $path)
+	private function routeLookup (string $method, string $path): ?object
 	{
 		if(is_null($path))
 		{

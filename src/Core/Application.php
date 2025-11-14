@@ -9,6 +9,7 @@ require __ABSOLUTEPATH__.'/Helpers/Objects.php';
 require __ABSOLUTEPATH__.'/Helpers/Strings.php';
 require __ABSOLUTEPATH__.'/Helpers/Routes.php';
 require __ABSOLUTEPATH__.'/Helpers/Controllers.php';
+require __ABSOLUTEPATH__.'/Helpers/Rendering.php';
 
 use NabuPHP\Core\Configuration;
 use NabuPHP\Routing\Router;

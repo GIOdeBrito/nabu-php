@@ -1,0 +1,15 @@
+{
+	"method": "POST",
+	"path": "/public/api/v1/post",
+	"params": {
+		"id": {
+			"type": "int",
+			"in": "json"
+		},
+		"name": {
+			"type": "string",
+			"in": "json"
+		}
+	},
+	"controller": "PostController@post"
+}

@@ -4,13 +4,11 @@ namespace NabuPHP\Interfaces;
 
 interface ResponseInterface
 {
-	function __construct (array $settings);
+	function __construct (array $settings, object $configs);
 
 	function getData(): mixed;
 
-	function isController(): bool;
-
-	function isView(): bool;
+	function getStatus(): int;
 
 	function getContentType(): string;
 }

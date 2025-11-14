@@ -2,6 +2,8 @@
 
 namespace NabuPHP\Helpers\Routes;
 
+use NabuPHP\Http\Responses\{ ViewResponse, JSONResponse, CustomResponse, ControllerResponse };
+
 use function NabuPHP\Helpers\Strings\constant_finder_replacer;
 
 function get_route_settings (object $route, object $constants): array
@@ -9,6 +11,7 @@ function get_route_settings (object $route, object $constants): array
 	$keys = get_object_vars($route);
 
 	$settings = [
+		'status' => 200,
 		'content' => '',
 		'content-type' => 'text/html',
 
@@ -33,12 +36,19 @@ function get_route_settings (object $route, object $constants): array
 
 		switch($key)
 		{
+			case 'status':
+				$settings['status'] = $value;
+				break;
+
 			case 'html':
 			case 'content':
-			case 'html-content':
-			case 'html_content':
 				$settings['isController'] = false;
 				$settings['content'] = $value;
+				break;
+
+			case 'json':
+				$settings['content'] = $value;
+				$settings['content-type'] = 'application/json';
 				break;
 
 			case 'render':
@@ -91,6 +101,29 @@ function excavate_JSON_route_files (string $routesPath, object $constants): arra
 	$jsonFiles = glob($path.'/*.json');
 
 	return $jsonFiles;
+}
+
+function get_route_response (array $settings, object $configs): ?object
+{
+	// Controller instructions
+	if($settings['isController'] === true)
+	{
+		return new ControllerResponse($settings, $configs);
+	}
+
+	// View reponse object
+	if($settings['isView'] === true)
+	{
+		return new ViewResponse($settings, $configs);
+	}
+
+	// If it's a json
+	if($settings['content-type'] === 'application/json')
+	{
+		return new JSONResponse($settings, $configs);
+	}
+
+	return new CustomResponse($settings, $configs);
 }
 
 ?>

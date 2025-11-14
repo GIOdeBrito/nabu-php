@@ -1,0 +1,5 @@
+{
+	"method": "GET",
+	"path": "/public/controls",
+	"controller": "HomeController@controls"
+}
