@@ -65,6 +65,8 @@ class RouteHelpers
 					break;
 
 				case "vars":
+				case "viewdata":
+				case "view-data":
 					$settings['view-vars'] = (array) $value;
 					break;
 

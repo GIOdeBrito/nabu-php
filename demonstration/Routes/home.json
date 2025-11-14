@@ -1,5 +1,8 @@
 {
 	"method": "GET",
 	"path": "/public/",
-	"controller": "HomeController@index"
+	"viewdata": {
+		"title": "Home"
+	},
+	"render": "$VIEWS_PATH/home.php"
 }

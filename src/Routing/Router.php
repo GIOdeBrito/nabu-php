@@ -125,12 +125,13 @@ class Router
 	{
 		extract($vars);
 
+		// Render the view's body
 		ob_start();
 		include $path;
 		$body = ob_get_clean();
 
-		// Renders with layout
-		if(isset($this->configs->properties->{'layouts-folder'}))
+		// Renders view with layout
+		if(!is_null($this->configs->getProperty('layouts-folder')))
 		{
 			$layoutsFolder = $this->configs->getProperty('layouts-folder');
 			$layout_folder = StringHelpers::constantFinderReplacer($layoutsFolder, $this->configs->getConstants());
