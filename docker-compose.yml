@@ -1,7 +1,7 @@
 
 services:
     main:
-        container_name: nabu-php-main
+        container_name: nabu-php-v5-main
         build:
             context: .
             dockerfile: ./Dockerfile
