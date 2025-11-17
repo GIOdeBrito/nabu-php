@@ -1,6 +1,8 @@
 {
 	"method": "GET",
 	"path": "/public/not-found",
-	"content": "<p>The request route was not found</p>",
-	"content-type": "text/html"
+	"view-data": {
+		"title": "404"
+	},
+	"view": "$VIEWS_PATH/404.php"
 }
